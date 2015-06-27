@@ -1,34 +1,29 @@
 var guid = require('./guid');
 
-module.export = function discover (key, predicate, timeout) {
-    var publishEventName  = guid + ':publish';
-    var discoverEventName = guid + ':discover';
-    if (typeof predicate === 'number') {
-        timeout = predicate;
-        predicate = null;
+module.export = function discover(key, handler) {
+  var publishEventName = guid + ':publish';
+  var discoverEventName = guid + ':discover';
+
+  var stop = function () {
+    window.removeEventListener(publishEventName, listener);
+  };
+
+  var listener = function (ev) {
+    ev = ev.detail;
+    if (ev && ev.key === key) {
+      handler(ev.value, stop);
     }
-    return new Promise(function (resolve, reject) {
-        var listener = function (ev) {
-            ev = ev.detail;
-            if (ev && ev.key === key) {
-                if (predicate ? predicate(ev.value) : true) {
-                    window.removeEventListener(publishEventName, listener);
-                    resolve(ev.value);
-                }
-            }
-        };
-        window.addEventListener(publishEventName, listener);
-        var event = new CustomEvent(discoverEventName, {
-            detail: {
-                key: key
-            }
-        });
-        window.dispatchEvent(event);
-        if (timeout) {
-            setTimeout(function () {
-                window.removeEventListener(publishEventName, listener);
-                reject(new Error('discover for [' + key + '] timeout'))
-            }, timeout * 1000)
-        }
-    })
+  };
+  window.addEventListener(publishEventName, listener);
+
+  var event = new CustomEvent(discoverEventName, {
+    detail: {
+      key: key
+    }
+  });
+  window.dispatchEvent(event);
+
+  return {
+    stop: stop
+  }
 };
