@@ -1,0 +1,22 @@
+{
+  "name": "locator",
+  "version": "0.1.0",
+  "description": "locator",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wmakeev/locator.git"
+  },
+  "keywords": [
+    "locator"
+  ],
+  "author": "Vitaliy V. Makeev",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/wmakeev/locator/issues"
+  },
+  "homepage": "https://github.com/wmakeev/locator#readme"
+}
