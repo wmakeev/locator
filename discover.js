@@ -1,6 +1,7 @@
 var guid = require('./guid');
 
-module.export = function discover(key, handler) {
+module.exports = function discover(key, handler) {
+  var discoveredEventsIds = {};
   var publishEventName = guid + ':publish';
   var discoverEventName = guid + ':discover';
 
@@ -10,7 +11,8 @@ module.export = function discover(key, handler) {
 
   var listener = function (ev) {
     ev = ev.detail;
-    if (ev && ev.key === key) {
+    if (ev && ev.id && ev.key === key && !discoveredEventsIds.hasOwnProperty(ev.id)) {
+      discoveredEventsIds[ev.id] = true;
       handler(ev.value, stop);
     }
   };
